@@ -5,7 +5,7 @@ export default function Header({ counts, onRestart, soundEnabled, onToggleSound 
   return (
     <header className="header">
       <div className="header__inner">
-        <h1 className="title" aria-label="Figuras">Figuras</h1>
+        <h1 className="title" aria-label="Geometry">Geometry</h1>
         <Counters counts={counts} />
         <div style={{ display: 'flex', gap: 8 }}>
           <button
