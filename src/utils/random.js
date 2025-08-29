@@ -27,11 +27,11 @@ function choiceWeighted(rng, weights) {
 }
 
 export const defaultConfig = {
-  totalMin: 18,
-  totalMax: 30,
+  totalMin: 14,
+  totalMax: 24,
   proportions: { circle: 0.4, square: 0.35, triangle: 0.25 },
   sizeMin: 44,
-  sizeMax: 64,
+  sizeMax: 68,
   // virtual canvas used as viewBox
   width: 1000,
   height: 700,

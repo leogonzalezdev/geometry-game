@@ -1,11 +1,27 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 export default function Shape({ shape, isLeaving, onHit, onRemove }) {
   const { id, type, x, y, size } = shape;
+  const ref = useRef(null);
+  const [fly, setFly] = useState({ dx: 0, dy: 0 });
 
   const handleActivate = useCallback(() => {
-    if (!isLeaving) onHit(id);
-  }, [id, isLeaving, onHit]);
+    if (isLeaving) return;
+    // Compute delta in screen pixels from shape center to counter center
+    const el = ref.current;
+    const counterId = `counter-${type}`;
+    const target = document.getElementById(counterId);
+    if (el && target) {
+      const a = el.getBoundingClientRect();
+      const b = target.getBoundingClientRect();
+      const ax = a.left + a.width / 2;
+      const ay = a.top + a.height / 2;
+      const bx = b.left + b.width / 2;
+      const by = b.top + b.height / 2;
+      setFly({ dx: bx - ax, dy: by - ay });
+    }
+    onHit(id);
+  }, [id, isLeaving, onHit, type]);
 
   const onKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -15,7 +31,11 @@ export default function Shape({ shape, isLeaving, onHit, onRemove }) {
   };
 
   const onTransitionEnd = (e) => {
-    if (isLeaving) onRemove(id);
+    if (!isLeaving) return;
+    // Only remove after the movement/opacity transition on the group ends
+    if (e.target === ref.current && (e.propertyName === 'transform' || e.propertyName === 'opacity')) {
+      onRemove(id);
+    }
   };
 
   const common = {
@@ -27,6 +47,8 @@ export default function Shape({ shape, isLeaving, onHit, onRemove }) {
     onClick: handleActivate,
     onTransitionEnd,
     transform: `translate(${x}, ${y})`,
+    ref,
+    style: { '--dx': `${fly.dx}px`, '--dy': `${fly.dy}px` },
   };
 
   const half = size / 2;

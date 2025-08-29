@@ -30,7 +30,7 @@ export default function Counters({ counts }) {
   return (
     <div className="counters" aria-label="Contadores">
       {['circle', 'square', 'triangle'].map((t) => (
-        <div className="counter" key={t}>
+        <div className="counter" key={t} id={`counter-${t}`}>
           <Icon type={t} />
           <div className="counter__nums">
             <span className="counter__remain" title="Restantes">{remainingByType[t]}</span>
@@ -48,4 +48,3 @@ export default function Counters({ counts }) {
     </div>
   );
 }
-
