@@ -54,27 +54,31 @@ export default function Shape({ shape, isLeaving, onHit, onRemove }) {
     className: `shape shape--${type}${isLeaving ? ' is-leaving' : ''}`,
     onKeyDown,
     onClick: handleActivate,
-    onTransitionEnd,
-    transform: `translate(${x}, ${y})`,
+    transform: `translate(${x}, ${y})`, // base position via attribute
     ref,
-    style: { '--dx': `${fly.dx}px`, '--dy': `${fly.dy}px` },
   };
 
   const half = size / 2;
   return (
     <g {...common}>
-      {type === 'circle' && (
-        <circle cx={half} cy={half} r={half - 1} className="shape__el" />
-      )}
-      {type === 'square' && (
-        <rect x={1} y={1} width={size - 2} height={size - 2} rx={6} className="shape__el" />
-      )}
-      {type === 'triangle' && (
-        <polygon
-          className="shape__el"
-          points={`${half},1 ${size - 1},${size - 1} 1,${size - 1}`}
-        />
-      )}
+      <g
+        className="shape__anim"
+        onTransitionEnd={onTransitionEnd}
+        style={{ '--dx': `${fly.dx}px`, '--dy': `${fly.dy}px` }}
+      >
+        {type === 'circle' && (
+          <circle cx={half} cy={half} r={half - 1} className="shape__el" />
+        )}
+        {type === 'square' && (
+          <rect x={1} y={1} width={size - 2} height={size - 2} rx={6} className="shape__el" />
+        )}
+        {type === 'triangle' && (
+          <polygon
+            className="shape__el"
+            points={`${half},1 ${size - 1},${size - 1} 1,${size - 1}`}
+          />
+        )}
+      </g>
     </g>
   );
 }
