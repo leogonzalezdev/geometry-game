@@ -1,26 +1,26 @@
 :root {
-  /* Playful palette adapted for dark background */
-  --bg: #0b1220; /* deep blue */
-  --text: #f2f6ff;
-  --muted: #c3cbe0;
-  --ring: #ffffff;
-  --blue: #6ea2ff;
-  --green: #4ee79a;
-  --orange: #ffb36a;
-  --pink: #ff7fbd;
-  --yellow: #ffe27a;
+  /* Playful, candy-like palette (light mode) */
+  --bg: #def7ff; /* light aqua */
+  --text: #0f2540;
+  --muted: #35506b;
+  --ring: #153e75;
+  --blue: #2f66ff;
+  --green: #19b865;
+  --orange: #ff8a2f;
+  --pink: #ff4fa0;
+  --yellow: #ffd75a;
   --header-h: 84px; /* tablets-first */
   --font-fun: "Comic Neue", "Baloo 2", "Fredoka One", "Chewy", "Nunito", "Segoe UI Rounded", "Comic Sans MS", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
-body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); position: relative; }
-/* Animated dark background using provided SVG */
-body::before { content: ""; position: fixed; inset: 0; background: url('/assets/bg.svg') center / cover no-repeat; opacity: 0.42; z-index: -1; transform: translate3d(-1%, 0, 0) scale(1.02); animation: bg-drift 60s ease-in-out infinite alternate; pointer-events: none; }
+body { margin: 0; font-family: var(--font-fun), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); position: relative; }
+/* Light background image (assets/bg.webp) with subtle drift */
+body::before { content: ""; position: fixed; inset: 0; background: url('./assets/bg.webp') center / cover no-repeat; opacity: .22; z-index: -1; transform: translate3d(-0.5%, 0, 0) scale(1.02); animation: bg-drift 45s ease-in-out infinite alternate; pointer-events: none; }
 @keyframes bg-drift {
-  0% { transform: translate3d(-1%, 0, 0) scale(1.02); }
-  100% { transform: translate3d(1%, 0, 0) scale(1.045); }
+  0% { transform: translate3d(-0.5%, 0, 0) scale(1.02); }
+  100% { transform: translate3d(0.5%, 0, 0) scale(1.035); }
 }
 
 .app { display: flex; flex-direction: column; min-height: 100%; }
@@ -28,8 +28,8 @@ body::before { content: ""; position: fixed; inset: 0; background: url('/assets/
 /* Header */
 .header { position: sticky; top: 0; z-index: 10; height: var(--header-h); display: flex; align-items: center; padding: 10px 16px; background: transparent; }
 .header::before { content: none; }
-.header__inner { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; width: 100%; max-width: 1200px; padding: 10px 14px; margin: 0 auto; border-radius: 18px; background: rgba(12,20,36,.58); border: 2px solid rgba(255,255,255,.12); box-shadow: 0 10px 24px rgba(0,0,0,.35), inset 0 8px 0 rgba(255,255,255,.06); backdrop-filter: blur(10px); }
-.title { font-size: 28px; margin: 0; font-family: var(--font-fun); color: var(--yellow); letter-spacing: .5px; text-shadow: 0 2px 0 rgba(0,0,0,.45), 0 8px 18px rgba(0,0,0,.35); }
+.header__inner { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; width: 100%; max-width: 1200px; padding: 10px 14px; margin: 0 auto; border-radius: 18px; background: rgba(255,255,255,.82); border: 2px solid rgba(20,60,120,.12); box-shadow: 0 10px 24px rgba(0,0,0,.12), inset 0 8px 0 rgba(255,255,255,.5); backdrop-filter: blur(10px); }
+.title { font-size: 28px; margin: 0; font-family: var(--font-fun); color: var(--text); letter-spacing: .5px; text-shadow: 0 2px 0 rgba(255,255,255,.6), 0 8px 18px rgba(0,0,0,.08); }
 
 .btn { color: #fff; border: 3px solid #1f7f42; padding: 10px 18px; border-radius: 999px; font-weight: 800; cursor: pointer; letter-spacing: .3px; background: linear-gradient(180deg, #8ef09d 0%, #35c96a 55%, #19b865 100%); box-shadow: 0 6px 0 #1f7f42, 0 10px 18px rgba(0,0,0,.15), inset 0 4px 0 rgba(255,255,255,.6); transition: transform .1s ease, box-shadow .1s ease; font-family: var(--font-fun); }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #1f7f42, 0 14px 22px rgba(0,0,0,.18), inset 0 4px 0 rgba(255,255,255,.65); }

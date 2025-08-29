@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Manages background loop and click beep. No external deps.
-export function useSound({ bgSrc = '/assets/sound.mp3', beepSrc = '/assets/beep.mp3', initialEnabled = true, bgVolume = 0.25, beepVolume = 0.5 } = {}) {
+export function useSound({ bgSrc = '/assets/sound.mp3', beepSrc = '/assets/beep.wav', initialEnabled = true, bgVolume = 0.25, beepVolume = 0.5 } = {}) {
   const [enabled, setEnabled] = useState(initialEnabled);
   const [needsUnlock, setNeedsUnlock] = useState(false);
   const bgRef = useRef(null);
