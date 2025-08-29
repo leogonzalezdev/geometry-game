@@ -30,13 +30,13 @@ export const defaultConfig = {
   totalMin: 14,
   totalMax: 24,
   proportions: { circle: 0.4, square: 0.35, triangle: 0.25 },
-  sizeMin: 44,
-  sizeMax: 68,
+  sizeMin: 64,
+  sizeMax: 96,
   // virtual canvas used as viewBox
   width: 1000,
   height: 700,
-  minGap: 8, // minimal gap between shape bounding boxes to avoid big overlaps
-  maxPlacementAttempts: 100,
+  minGap: 10, // minimal gap between shape bounding boxes to avoid big overlaps
+  maxPlacementAttempts: 150,
   seed: null, // set a number for reproducible distributions
 };
 
