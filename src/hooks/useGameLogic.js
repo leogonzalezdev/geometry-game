@@ -2,9 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { generateShapes, defaultConfig } from '../utils/random.js';
 
 // Small helper to count remaining by type from current shapes
-function countByType(shapes) {
+function countRemainingByType(shapes, leavingIds) {
   const counts = { circle: 0, square: 0, triangle: 0 };
-  for (const s of shapes) counts[s.type]++;
+  const leaving = leavingIds || new Set();
+  for (const s of shapes) if (!leaving.has(s.id)) counts[s.type]++;
   return counts;
 }
 
@@ -12,7 +13,7 @@ export function useGameLogic(initialConfig) {
   const [config, setConfig] = useState(() => ({ ...defaultConfig, ...(initialConfig || {}) }));
   const [shapes, setShapes] = useState([]);
   const [leavingIds, setLeavingIds] = useState(() => new Set());
-  const [hitByType, setHitByType] = useState({ circle: 0, square: 0, triangle: 0 });
+  const [initialCountsByType, setInitialCountsByType] = useState({ circle: 0, square: 0, triangle: 0 });
 
   const initGame = useCallback((cfg) => {
     const nextCfg = { ...config, ...(cfg || {}) };
@@ -20,7 +21,10 @@ export function useGameLogic(initialConfig) {
     const newShapes = generateShapes(nextCfg);
     setShapes(newShapes);
     setLeavingIds(new Set());
-    setHitByType({ circle: 0, square: 0, triangle: 0 });
+    // snapshot initial totals by type
+    const snapshot = { circle: 0, square: 0, triangle: 0 };
+    for (const s of newShapes) snapshot[s.type]++;
+    setInitialCountsByType(snapshot);
   }, [config]);
 
   useEffect(() => {
@@ -29,28 +33,29 @@ export function useGameLogic(initialConfig) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const remainingByType = useMemo(() => countByType(shapes), [shapes]);
-  const totalRemaining = useMemo(() => shapes.length, [shapes]);
+  const remainingByType = useMemo(() => countRemainingByType(shapes, leavingIds), [shapes, leavingIds]);
+  const totalRemaining = useMemo(() => remainingByType.circle + remainingByType.square + remainingByType.triangle, [remainingByType]);
+
+  const hitByType = useMemo(() => ({
+    circle: Math.max(0, initialCountsByType.circle - remainingByType.circle),
+    square: Math.max(0, initialCountsByType.square - remainingByType.square),
+    triangle: Math.max(0, initialCountsByType.triangle - remainingByType.triangle),
+  }), [initialCountsByType, remainingByType]);
 
   const counts = useMemo(() => ({
-    totalByType: {
-      circle: remainingByType.circle + hitByType.circle,
-      square: remainingByType.square + hitByType.square,
-      triangle: remainingByType.triangle + hitByType.triangle,
-    },
+    totalByType: initialCountsByType,
     hitByType,
     remainingByType,
     totalRemaining,
     totalHit: hitByType.circle + hitByType.square + hitByType.triangle,
-  }), [remainingByType, totalRemaining, hitByType]);
+  }), [initialCountsByType, hitByType, remainingByType, totalRemaining]);
 
   const handleHit = useCallback((id) => {
-    // prevent double hit or re-hit of leaving shape
+    // mark as leaving (excluded from remaining immediately)
     setShapes((prev) => {
       const shape = prev.find((s) => s.id === id);
       if (!shape) return prev;
       setLeavingIds((set) => new Set(set).add(id));
-      setHitByType((old) => ({ ...old, [shape.type]: old[shape.type] + 1 }));
       return prev;
     });
   }, []);
@@ -78,4 +83,3 @@ export function useGameLogic(initialConfig) {
     setConfig,
   };
 }
-

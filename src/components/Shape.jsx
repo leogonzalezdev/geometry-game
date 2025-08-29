@@ -19,6 +19,12 @@ export default function Shape({ shape, isLeaving, onHit, onRemove }) {
       const bx = b.left + b.width / 2;
       const by = b.top + b.height / 2;
       setFly({ dx: bx - ax, dy: by - ay });
+      // brief pulse on the target counter for feedback
+      target.classList.remove('counter--pulse');
+      // force reflow to restart animation if already applied
+      void target.offsetWidth;
+      target.classList.add('counter--pulse');
+      setTimeout(() => target.classList.remove('counter--pulse'), 320);
     }
     onHit(id);
   }, [id, isLeaving, onHit, type]);
