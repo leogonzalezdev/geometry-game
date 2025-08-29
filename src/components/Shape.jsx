@@ -9,22 +9,25 @@ export default function Shape({ shape, isLeaving, onHit, onRemove }) {
     if (isLeaving) return;
     // Compute delta in screen pixels from shape center to counter center
     const el = ref.current;
-    const counterId = `counter-${type}`;
-    const target = document.getElementById(counterId);
-    if (el && target) {
+    const anchorId = `counter-anchor-${type}`;
+    const fallbackCounterId = `counter-${type}`;
+    const anchor = document.getElementById(anchorId) || document.getElementById(fallbackCounterId);
+    if (el && anchor) {
       const a = el.getBoundingClientRect();
-      const b = target.getBoundingClientRect();
+      const b = anchor.getBoundingClientRect();
       const ax = a.left + a.width / 2;
       const ay = a.top + a.height / 2;
       const bx = b.left + b.width / 2;
       const by = b.top + b.height / 2;
       setFly({ dx: bx - ax, dy: by - ay });
-      // brief pulse on the target counter for feedback
-      target.classList.remove('counter--pulse');
+      // brief pulse on the target counter container for feedback
+      const counterEl = anchor.closest ? anchor.closest('.counter') : null;
+      const pulseEl = counterEl || document.getElementById(fallbackCounterId) || anchor;
+      pulseEl.classList.remove('counter--pulse');
       // force reflow to restart animation if already applied
-      void target.offsetWidth;
-      target.classList.add('counter--pulse');
-      setTimeout(() => target.classList.remove('counter--pulse'), 320);
+      void pulseEl.offsetWidth;
+      pulseEl.classList.add('counter--pulse');
+      setTimeout(() => pulseEl.classList.remove('counter--pulse'), 360);
     }
     onHit(id);
   }, [id, isLeaving, onHit, type]);

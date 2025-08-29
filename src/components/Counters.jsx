@@ -1,8 +1,8 @@
 import React from 'react';
 
-function Icon({ type }) {
+function Icon({ type, id }) {
   const size = 18;
-  const common = { width: size, height: size, 'aria-hidden': true };
+  const common = { id, width: size, height: size, 'aria-hidden': true };
   if (type === 'circle') {
     return (
       <svg {...common} viewBox="0 0 24 24" className="ico ico--circle">
@@ -31,7 +31,7 @@ export default function Counters({ counts }) {
     <div className="counters" aria-label="Contadores">
       {['circle', 'square', 'triangle'].map((t) => (
         <div className={`counter counter--${t}`} key={t} id={`counter-${t}`}>
-          <Icon type={t} />
+          <Icon type={t} id={`counter-anchor-${t}`} />
           <div className="counter__nums">
             <span className="counter__remain" title="Restantes">{remainingByType[t]}</span>
             <span className="counter__hit" title="Acertados">{hitByType[t]}</span>
