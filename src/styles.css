@@ -1,0 +1,84 @@
+:root {
+  --bg: #f7f7fb;
+  --text: #111;
+  --muted: #555;
+  --ring: #222;
+  --blue: #2f66ff;
+  --green: #1ea672;
+  --orange: #ff8a2f;
+  --header-h: 84px; /* tablets-first */
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+.app { display: flex; flex-direction: column; min-height: 100%; }
+
+/* Header */
+.header { position: sticky; top: 0; z-index: 10; background: #fff; border-bottom: 1px solid #e6e6ee; height: var(--header-h); display: flex; align-items: center; }
+.header__inner { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; width: 100%; max-width: 1200px; padding: 0 16px; margin: 0 auto; }
+.title { font-size: 22px; margin: 0; }
+
+.btn { background: #111; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.btn:hover { opacity: .9; }
+.btn:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+
+/* Counters */
+.counters { display: flex; gap: 16px; align-items: center; justify-content: center; }
+.counter { display: flex; align-items: center; gap: 8px; background: #f2f2f7; border-radius: 10px; padding: 6px 10px; min-height: 44px; }
+.counter.total { background: #eaeaf1; }
+.counter__nums { display: flex; gap: 8px; font-variant-numeric: tabular-nums; }
+.counter__remain { font-weight: 700; }
+.counter__hit { color: var(--muted); }
+
+.ico { display: inline-block; }
+.ico--circle { fill: var(--blue); }
+.ico--square { fill: var(--green); }
+.ico--triangle { fill: var(--orange); }
+
+/* Main & Canvas */
+.main { flex: 1; min-height: 0; }
+.canvas { height: calc(100vh - var(--header-h)); }
+.svg { width: 100%; height: 100%; display: block; }
+
+/* Shapes base styles */
+.shape { cursor: pointer; }
+.shape__el { transition: transform 320ms ease, opacity 320ms ease; opacity: 1; transform: scale(1); }
+.shape--circle .shape__el { fill: color-mix(in srgb, var(--blue) 92%, white); stroke: var(--blue); }
+.shape--square .shape__el { fill: color-mix(in srgb, var(--green) 92%, white); stroke: var(--green); }
+.shape--triangle .shape__el { fill: color-mix(in srgb, var(--orange) 92%, white); stroke: var(--orange); }
+
+/* Hover/active states (desktop) */
+.shape:hover .shape__el { filter: brightness(0.98); }
+.shape:active .shape__el { transform: scale(0.96); }
+
+/* Focus ring for SVG: stroke highlight */
+.shape:focus-visible > .shape__el { stroke: var(--ring); stroke-width: 3; }
+
+/* Enter animation */
+.shape { animation: pop-in 180ms ease-out both; }
+@keyframes pop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.shape .shape__el { animation: scale-in 180ms ease-out both; }
+@keyframes scale-in {
+  from { transform: scale(0.9); }
+  to { transform: scale(1); }
+}
+
+/* Exit animation */
+.shape.is-leaving .shape__el { opacity: 0; transform: scale(0.8); }
+
+/* Modal */
+.modal__backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: grid; place-items: center; padding: 16px; }
+.modal { background: #fff; color: var(--text); width: min(420px, 92vw); border-radius: 14px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.15); text-align: center; }
+.modal h2 { margin-top: 0; }
+
+/* Responsive tweaks */
+@media (min-width: 900px) {
+  .title { font-size: 24px; }
+  .header__inner { grid-template-columns: auto 1fr auto; }
+}
+
