@@ -27,11 +27,7 @@ export function useGameLogic(initialConfig) {
     setInitialCountsByType(snapshot);
   }, [config]);
 
-  useEffect(() => {
-    // Init on mount
-    initGame();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // No auto init; the App controls when to start
 
   const remainingByType = useMemo(() => countRemainingByType(shapes, leavingIds), [shapes, leavingIds]);
   const totalRemaining = useMemo(() => remainingByType.circle + remainingByType.square + remainingByType.triangle, [remainingByType]);
