@@ -15,7 +15,7 @@
 
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
-body { margin: 0; font-family: var(--font-fun), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); position: relative; }
+body { margin: 0; font-family: var(--font-fun), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: var(--text); background: var(--bg); position: relative; touch-action: manipulation; }
 /* Light background image (assets/bg.webp) with subtle drift */
 body::before { content: ""; position: fixed; inset: 0; background: url('./assets/bg.webp') center / cover no-repeat; opacity: .22; z-index: -1; transform: translate3d(-0.5%, 0, 0) scale(1.02); animation: bg-drift 45s ease-in-out infinite alternate; pointer-events: none; }
 @keyframes bg-drift {
@@ -31,7 +31,7 @@ body::before { content: ""; position: fixed; inset: 0; background: url('./assets
 .header__inner { position: relative; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; width: 100%; max-width: 1200px; padding: 10px 14px; margin: 0 auto; border-radius: 18px; background: rgba(255,255,255,.82); border: 2px solid rgba(20,60,120,.12); box-shadow: 0 10px 24px rgba(0,0,0,.12), inset 0 8px 0 rgba(255,255,255,.5); backdrop-filter: blur(10px); }
 .title { font-size: 28px; margin: 0; font-family: var(--font-fun); color: var(--text); letter-spacing: .5px; text-shadow: 0 2px 0 rgba(255,255,255,.6), 0 8px 18px rgba(0,0,0,.08); }
 
-.btn { color: #fff; border: 3px solid #1f7f42; padding: 10px 18px; border-radius: 999px; font-weight: 800; cursor: pointer; letter-spacing: .3px; background: linear-gradient(180deg, #8ef09d 0%, #35c96a 55%, #19b865 100%); box-shadow: 0 6px 0 #1f7f42, 0 10px 18px rgba(0,0,0,.15), inset 0 4px 0 rgba(255,255,255,.6); transition: transform .1s ease, box-shadow .1s ease; font-family: var(--font-fun); }
+.btn { color: #fff; border: 3px solid #1f7f42; padding: 10px 18px; border-radius: 999px; font-weight: 800; cursor: pointer; letter-spacing: .3px; background: linear-gradient(180deg, #8ef09d 0%, #35c96a 55%, #19b865 100%); box-shadow: 0 6px 0 #1f7f42, 0 10px 18px rgba(0,0,0,.15), inset 0 4px 0 rgba(255,255,255,.6); transition: transform .1s ease, box-shadow .1s ease; font-family: var(--font-fun); touch-action: manipulation; }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #1f7f42, 0 14px 22px rgba(0,0,0,.18), inset 0 4px 0 rgba(255,255,255,.65); }
 .btn:active { transform: translateY(2px); box-shadow: 0 3px 0 #1f7f42, 0 6px 12px rgba(0,0,0,.14), inset 0 2px 0 rgba(255,255,255,.55); }
 .btn:focus-visible { outline: 4px solid #fff; outline-offset: 2px; box-shadow: 0 8px 0 #1f7f42, 0 14px 22px rgba(0,0,0,.18), 0 0 0 5px rgba(21,62,117,.35) inset; }
