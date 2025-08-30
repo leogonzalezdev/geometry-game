@@ -27,22 +27,20 @@ export default function App() {
   const gameFinished = isGameFinished();
 
   const { enabled: soundEnabled, toggle: toggleSound, playBeep, playError } = useSound();
-  const [toast, setToast] = React.useState(null);
+  const [toast, setToast] = React.useState(null); // { type }
 
   const onCorrect = (id) => {
     playBeep();
     handleHit(id);
-    // if that was the last of this type, advance immediately
+    // if that was the last of this type, advance immediately and show big toast
     const remainingAfter = (counts.remainingByType[targetType] || 0) - 1;
     if (remainingAfter === 0) {
-      // show toast for next stage if exists
-      advanceStage();
-      setTimeout(() => {
-        setToast(targetType === 'square' ? 'Ahora juntemos los círculos' : targetType === 'circle' ? 'Ahora juntemos los triángulos' : null);
-        if (targetType !== 'triangle') {
-          setTimeout(() => setToast(null), 1600);
-        }
-      }, 0);
+      const nextType = targetType === 'square' ? 'circle' : targetType === 'circle' ? 'triangle' : null;
+      if (nextType) {
+        advanceStage();
+        setToast({ type: nextType });
+        setTimeout(() => setToast(null), 2000);
+      }
     }
   };
 
@@ -52,12 +50,14 @@ export default function App() {
 
   const startGame = () => {
     if (!started) setStarted(true);
-    // Use viewport size to spread shapes across available space
+    // Use viewport size to spread shapes across available space and scale totals
     const w = document.documentElement.clientWidth;
     const header = document.querySelector('.header');
     const headerH = header ? header.offsetHeight : 0;
     const h = Math.max(200, document.documentElement.clientHeight - headerH);
-    initGame({ width: w, height: h });
+    const area = Math.max(1, w * h);
+    const base = Math.max(24, Math.min(70, Math.round(area / 25000))); // scale with screen
+    initGame({ width: w, height: h, totalMin: base, totalMax: base + 8, sizeMin: 48, sizeMax: 120 });
   };
 
   return (
@@ -80,7 +80,7 @@ export default function App() {
           onRemove={handleRemove}
           viewBox={`0 0 ${config.width} ${config.height}`}
         />
-        {toast && <StageToast text={toast} />}
+        {toast && <StageToast targetType={toast.type} />}
       </main>
 
       {!started && (
