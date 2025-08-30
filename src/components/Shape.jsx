@@ -89,3 +89,4 @@ export default function Shape({ shape, isLeaving, targetType, onCorrect, onWrong
     </g>
   );
 }
+
