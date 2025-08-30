@@ -35,7 +35,8 @@ export const defaultConfig = {
   // virtual canvas used as viewBox
   width: 1000,
   height: 700,
-  minGap: 10, // minimal gap between shape bounding boxes to avoid big overlaps
+  minGap: 0, // minimal gap between shape bounding boxes (0 allows touching)
+  maxCoverRatio: 0.8, // max fraction of smaller box that can be covered by overlap
   maxPlacementAttempts: 150,
   seed: null, // set a number for reproducible distributions
 };
@@ -45,15 +46,14 @@ function boundingBox(shape) {
   return { x, y, w: size, h: size };
 }
 
-function overlaps(boxA, boxB, minGap) {
-  // Return true if boxes overlap more than allowed gap
-  const ax2 = boxA.x + boxA.w;
-  const ay2 = boxA.y + boxA.h;
-  const bx2 = boxB.x + boxB.w;
-  const by2 = boxB.y + boxB.h;
-
-  const noOverlap = ax2 + minGap <= boxB.x || bx2 + minGap <= boxA.x || ay2 + minGap <= boxB.y || by2 + minGap <= boxA.y;
-  return !noOverlap;
+function intersectionArea(a, b) {
+  const x1 = Math.max(a.x, b.x);
+  const y1 = Math.max(a.y, b.y);
+  const x2 = Math.min(a.x + a.w, b.x + b.w);
+  const y2 = Math.min(a.y + a.h, b.y + b.h);
+  const w = Math.max(0, x2 - x1);
+  const h = Math.max(0, y2 - y1);
+  return w * h;
 }
 
 export function generateShapes(config) {
@@ -111,7 +111,13 @@ export function generateShapes(config) {
       const candidate = { x, y, w: size, h: size };
       let ok = true;
       for (const b of boxes) {
-        if (overlaps(candidate, b, cfg.minGap)) { ok = false; break; }
+        // Allow partial overlaps but avoid excessive coverage
+        const inter = intersectionArea(candidate, b);
+        if (inter > 0) {
+          const minArea = Math.min(candidate.w * candidate.h, b.w * b.h);
+          const cover = inter / minArea;
+          if (cover >= cfg.maxCoverRatio) { ok = false; break; }
+        }
       }
       if (ok) {
         boxes.push(candidate);

@@ -8,6 +8,7 @@ export function useSound({ bgSrc = bgUrl, beepSrc = beepUrl, initialEnabled = tr
   const [needsUnlock, setNeedsUnlock] = useState(false);
   const bgRef = useRef(null);
   const unlockedRef = useRef(false);
+  const audioCtxRef = useRef(null);
 
   // lazy create to avoid constructing if never used
   const ensureBG = useCallback(() => {
@@ -77,5 +78,29 @@ export function useSound({ bgSrc = bgUrl, beepSrc = beepUrl, initialEnabled = tr
     a.play().catch(() => {});
   }, [enabled, beepSrc, beepVolume]);
 
-  return { enabled, toggle, playBeep, needsUnlock };
+  const playError = useCallback(() => {
+    if (!enabled) return;
+    try {
+      if (!audioCtxRef.current) {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        audioCtxRef.current = new Ctx();
+      }
+      const ctx = audioCtxRef.current;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'square';
+      // downward chirp for error
+      o.frequency.setValueAtTime(320, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.18);
+      g.gain.setValueAtTime(0.001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + 0.24);
+    } catch {}
+  }, [enabled]);
+
+  return { enabled, toggle, playBeep, playError, needsUnlock };
 }

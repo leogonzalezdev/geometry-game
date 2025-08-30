@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { generateShapes, defaultConfig } from '../utils/random.js';
 
 // Small helper to count remaining by type from current shapes
@@ -14,6 +14,8 @@ export function useGameLogic(initialConfig) {
   const [shapes, setShapes] = useState([]);
   const [leavingIds, setLeavingIds] = useState(() => new Set());
   const [initialCountsByType, setInitialCountsByType] = useState({ circle: 0, square: 0, triangle: 0 });
+  const stages = ['square', 'circle', 'triangle'];
+  const [stageIndex, setStageIndex] = useState(0);
 
   const initGame = useCallback((cfg) => {
     const nextCfg = { ...config, ...(cfg || {}) };
@@ -21,6 +23,7 @@ export function useGameLogic(initialConfig) {
     const newShapes = generateShapes(nextCfg);
     setShapes(newShapes);
     setLeavingIds(new Set());
+    setStageIndex(0);
     // snapshot initial totals by type
     const snapshot = { circle: 0, square: 0, triangle: 0 };
     for (const s of newShapes) snapshot[s.type]++;
@@ -67,6 +70,13 @@ export function useGameLogic(initialConfig) {
 
   const isGameFinished = useCallback(() => totalRemaining === 0, [totalRemaining]);
 
+  const targetType = stages[Math.min(stageIndex, stages.length - 1)];
+
+  // Imperative advance stage
+  const advanceStage = useCallback(() => {
+    setStageIndex((i) => (i < stages.length - 1 ? i + 1 : i));
+  }, [stages.length]);
+
   return {
     shapes,
     leavingIds,
@@ -77,5 +87,9 @@ export function useGameLogic(initialConfig) {
     isGameFinished,
     config,
     setConfig,
+    stages,
+    stageIndex,
+    targetType,
+    advanceStage,
   };
 }

@@ -1,12 +1,19 @@
 import React, { useCallback, useRef, useState } from 'react';
 
-export default function Shape({ shape, isLeaving, onHit, onRemove }) {
+export default function Shape({ shape, isLeaving, targetType, onCorrect, onWrong, onRemove }) {
   const { id, type, x, y, size } = shape;
   const ref = useRef(null);
   const [fly, setFly] = useState({ dx: 0, dy: 0 });
+  const [isError, setIsError] = useState(false);
 
   const handleActivate = useCallback(() => {
     if (isLeaving) return;
+    if (type !== targetType) {
+      setIsError(true);
+      setTimeout(() => setIsError(false), 260);
+      if (onWrong) onWrong(id, type);
+      return;
+    }
     // Compute delta in screen pixels from shape center to counter center
     const el = ref.current;
     const anchorId = `counter-anchor-${type}`;
@@ -29,8 +36,8 @@ export default function Shape({ shape, isLeaving, onHit, onRemove }) {
       pulseEl.classList.add('counter--pulse');
       setTimeout(() => pulseEl.classList.remove('counter--pulse'), 360);
     }
-    onHit(id);
-  }, [id, isLeaving, onHit, type]);
+    if (onCorrect) onCorrect(id);
+  }, [id, isLeaving, onCorrect, onWrong, targetType, type]);
 
   const onKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -51,7 +58,7 @@ export default function Shape({ shape, isLeaving, onHit, onRemove }) {
     role: 'button',
     tabIndex: 0,
     'aria-label': type === 'circle' ? 'Círculo' : type === 'square' ? 'Cuadrado' : 'Triángulo',
-    className: `shape shape--${type}${isLeaving ? ' is-leaving' : ''}`,
+    className: `shape shape--${type}${isLeaving ? ' is-leaving' : ''}${isError ? ' is-error' : ''}`,
     onKeyDown,
     onClick: handleActivate,
     transform: `translate(${x}, ${y})`, // base position via attribute

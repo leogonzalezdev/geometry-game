@@ -1,9 +1,7 @@
 import React from 'react';
 import Shape from './Shape.jsx';
 
-export default function Canvas({ shapes, leavingIds, onHit, onRemove }) {
-  // Virtual canvas matches utils default (1000 x 700). It scales on screen.
-  const viewBox = '0 0 1000 700';
+export default function Canvas({ shapes, leavingIds, onCorrect, onWrong, targetType, onRemove, viewBox }) {
 
   return (
     <section className="canvas" aria-label="Lienzo de figuras">
@@ -13,7 +11,9 @@ export default function Canvas({ shapes, leavingIds, onHit, onRemove }) {
             key={s.id}
             shape={s}
             isLeaving={leavingIds.has(s.id)}
-            onHit={onHit}
+            onCorrect={onCorrect}
+            onWrong={onWrong}
+            targetType={targetType}
             onRemove={onRemove}
           />
         ))}
@@ -21,4 +21,3 @@ export default function Canvas({ shapes, leavingIds, onHit, onRemove }) {
     </section>
   );
 }
-
